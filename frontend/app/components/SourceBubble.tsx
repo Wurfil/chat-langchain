@@ -22,7 +22,7 @@ export function SourceBubble({
 }) {
     // Splitting the title into parts
     const parts = source.title.split(" | ");
-
+    const parts1 = source.url.split("#");
     return (
         <Card
             onClick={async () => {
@@ -47,10 +47,15 @@ export function SourceBubble({
             overflow="hidden"
         >
             <CardBody>
-                <Heading size="sm" fontWeight="normal" color="blue">
+                <Heading fontSize="small" fontWeight="normal" color="gray" pb={2}>
                     {parts[0]} {/* Render the first part separately */}
                 </Heading>
-                {parts.slice(1).join(" | ")} {/* Render all other parts joined together */}
+                <Heading color="blue" fontWeight="normal" fontSize="medium" pb={1}>
+                    {parts1[1]}
+                </Heading>
+                <Heading color="black" fontWeight="light" fontSize="medium" >
+                    {parts.slice(1).join(" | ")} {/* Render all other parts joined together */}
+                </Heading>
             </CardBody>
         </Card>
     );

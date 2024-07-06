@@ -210,7 +210,7 @@ export function ChatWindow(props: { conversationId: string }) {
             <Heading
                 fontSize="3xl"
                 fontWeight="bold"
-                color="#2c81d0"
+                color="#0078ff"
             >
               RuStore Chat
             </Heading>
@@ -271,7 +271,7 @@ export function ChatWindow(props: { conversationId: string }) {
                 textColor="#2d3748"
                 borderColor="#e2e8f0"
                 backgroundColor="white"
-                _focus={{borderColor: "#2c81d0", boxShadow: "0 0 0 1px #3182ce"}}
+                _focus={{borderColor: "#2f83d5", boxShadow: "0 0 0 1px #3182ce"}}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={(e) => {
                   if (e.key === "Enter" && !e.shiftKey) {
