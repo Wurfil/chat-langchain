@@ -1,26 +1,58 @@
-"""Load html from files, clean up, split, ingest into Weaviate."""
+"""Load html from files, clean up, split, ingest into Chroma."""
 import logging
 import os
 import re
+from pathlib import Path
+
 from parser import langchain_docs_extractor
 
-import weaviate
 from bs4 import BeautifulSoup, SoupStrainer
-from constants import WEAVIATE_DOCS_INDEX_NAME
-from langchain.document_loaders import RecursiveUrlLoader, SitemapLoader
+from langchain_community.document_loaders import SitemapLoader, RecursiveUrlLoader
 from langchain.indexes import SQLRecordManager, index
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.utils.html import PREFIXES_TO_IGNORE_REGEX, SUFFIXES_TO_IGNORE_REGEX
-from langchain_community.vectorstores import Weaviate
+from langchain_community.vectorstores import Chroma
 from langchain_core.embeddings import Embeddings
-from langchain_openai import OpenAIEmbeddings
+from langchain_core.documents import Document
+from langchain_huggingface import HuggingFaceEmbeddings
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
+class SitemapLoaderWithChromium(SitemapLoader):
+    async def _fetch(
+        self, url: str, retries: int = 3, cooldown: int = 2, backoff: float = 1.5
+    ) -> str:
+        """
+        Asynchronously scrape the content of a given URL using Playwright's async API.
+
+        Args:
+            url (str): The URL to scrape.
+
+        Returns:
+            str: The scraped HTML content or an error message if an exception occurs.
+
+        """
+        from playwright.async_api import async_playwright
+
+        logger.info("Starting scraping...")
+        results = ""
+        async with async_playwright() as p:
+            browser = await p.chromium.launch(headless=True)
+            try:
+                page = await browser.new_page()
+                await page.goto(url)
+                results = await page.content()  # Simply get the HTML content
+                logger.info("Content scraped")
+            except Exception as e:
+                results = f"Error: {e}"
+            await browser.close()
+        return results
+
+
 def get_embeddings_model() -> Embeddings:
-    return OpenAIEmbeddings(model="text-embedding-3-small", chunk_size=200)
+    return HuggingFaceEmbeddings(model_name="intfloat/multilingual-e5-small")
 
 
 def metadata_extractor(meta: dict, soup: BeautifulSoup) -> dict:
@@ -36,10 +68,12 @@ def metadata_extractor(meta: dict, soup: BeautifulSoup) -> dict:
     }
 
 
-def load_langchain_docs():
-    return SitemapLoader(
-        "https://python.langchain.com/sitemap.xml",
-        filter_urls=["https://python.langchain.com/"],
+def load_rustore_docs():
+    file_path = Path("./notebooks/sitemap-help.xml").absolute()
+    return SitemapLoaderWithChromium(
+        file_path,
+        is_local=True,
+        filter_urls=["https://www.rustore.ru/help"],
         parsing_function=langchain_docs_extractor,
         default_parser="lxml",
         bs_kwargs={
@@ -48,12 +82,25 @@ def load_langchain_docs():
             ),
         },
         meta_function=metadata_extractor,
+        requests_per_second=1,
     ).load()
+
+
+def load_rustore_example_doc():
+    with open('notebooks/test.html', "r") as f:
+        soup = BeautifulSoup(f)
+    metadata = metadata_extractor(
+        {"loc": "https://www.rustore.ru/help/sdk/push-notifications/user-segments/segments-mytracker"
+         }, soup)
+    content = langchain_docs_extractor(soup)
+
+    doc = Document(page_content=content, metadata=metadata)
+    return [doc]
 
 
 def load_langsmith_docs():
     return RecursiveUrlLoader(
-        url="https://docs.smith.langchain.com/",
+        url="https://www.rustore.ru/help/developers/",
         max_depth=8,
         extractor=simple_extractor,
         prevent_outside=True,
@@ -95,46 +142,44 @@ def load_api_docs():
 
 
 def ingest_docs():
-    WEAVIATE_URL = os.environ["WEAVIATE_URL"]
-    WEAVIATE_API_KEY = os.environ["WEAVIATE_API_KEY"]
-    RECORD_MANAGER_DB_URL = os.environ["RECORD_MANAGER_DB_URL"]
+    DATABASE_HOST = "0.0.0.0"
+    DATABASE_PORT = "5432"
+    DATABASE_USERNAME = "postgres"
+    DATABASE_PASSWORD = "hackme"
+    DATABASE_NAME = "rustore"
+    RECORD_MANAGER_DB_URL = f"postgresql://{DATABASE_USERNAME}:{DATABASE_PASSWORD}@{DATABASE_HOST}:{DATABASE_PORT}/{DATABASE_NAME}"
+    COLLECTION_NAME = "test_collection"
 
     text_splitter = RecursiveCharacterTextSplitter(chunk_size=4000, chunk_overlap=200)
     embedding = get_embeddings_model()
 
-    client = weaviate.Client(
-        url=WEAVIATE_URL,
-        auth_client_secret=weaviate.AuthApiKey(api_key=WEAVIATE_API_KEY),
-    )
-    vectorstore = Weaviate(
-        client=client,
-        index_name=WEAVIATE_DOCS_INDEX_NAME,
-        text_key="text",
-        embedding=embedding,
-        by_text=False,
-        attributes=["source", "title"],
+    vectorstore = Chroma(
+        collection_name=COLLECTION_NAME,
+        embedding_function=embedding,
+        persist_directory='./chroma_data'
     )
 
     record_manager = SQLRecordManager(
-        f"weaviate/{WEAVIATE_DOCS_INDEX_NAME}", db_url=RECORD_MANAGER_DB_URL
+        f"chroma/{COLLECTION_NAME}", db_url=RECORD_MANAGER_DB_URL
     )
     record_manager.create_schema()
 
-    docs_from_documentation = load_langchain_docs()
+    docs_from_documentation = load_rustore_docs()
     logger.info(f"Loaded {len(docs_from_documentation)} docs from documentation")
-    docs_from_api = load_api_docs()
-    logger.info(f"Loaded {len(docs_from_api)} docs from API")
-    docs_from_langsmith = load_langsmith_docs()
-    logger.info(f"Loaded {len(docs_from_langsmith)} docs from Langsmith")
+    # docs_from_api = load_api_docs()
+    # logger.info(f"Loaded {len(docs_from_api)} docs from API")
+    # docs_from_langsmith = load_langsmith_docs()
+    # logger.info(f"Loaded {len(docs_from_langsmith)} docs from Langsmith")
+
+    # docs_transformed = text_splitter.split_documents(
+    #     docs_from_documentation + docs_from_api + docs_from_langsmith
+    # )
 
     docs_transformed = text_splitter.split_documents(
-        docs_from_documentation + docs_from_api + docs_from_langsmith
+        docs_from_documentation
     )
     docs_transformed = [doc for doc in docs_transformed if len(doc.page_content) > 10]
 
-    # We try to return 'source' and 'title' metadata when querying vector store and
-    # Weaviate will error at query time if one of the attributes is missing from a
-    # retrieved document.
     for doc in docs_transformed:
         if "source" not in doc.metadata:
             doc.metadata["source"] = ""
@@ -151,7 +196,7 @@ def ingest_docs():
     )
 
     logger.info(f"Indexing stats: {indexing_stats}")
-    num_vecs = client.query.aggregate(WEAVIATE_DOCS_INDEX_NAME).with_meta_count().do()
+    num_vecs = len(vectorstore)
     logger.info(
         f"LangChain now has this many vectors: {num_vecs}",
     )

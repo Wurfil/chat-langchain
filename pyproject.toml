@@ -11,25 +11,29 @@ langchain = "^0.1.12"
 langsmith =  "^0.1.25"
 langchain-community = ">=0.0.27,<0.1"
 langchain-openai = ">=0.0.8,<0.1"
-langchain-google-genai = ">=0.0.6,<0.1"
 langchain-anthropic = "^0.1.4"
-langchain-fireworks = "^0.1.1"
 langserve = {extras = ["server"], version = "^0.0.39"}
 fastapi = "^0.103.1"
 pydantic = "1.10"
 uvicorn = "^0.23.2"
 beautifulsoup4 = "^4.12.2"
-weaviate-client = "^3.23.2"
-psycopg2 = "^2.9.7"
 lxml = "^4.9.3"
-voyageai = "^0.1.4"
 pillow = "^10.2.0"
 tiktoken = "^0.5.2"
 cohere = "4.45"
+chromadb = "^0.5.3"
+langchain-huggingface = "^0.0.3"
+psycopg2 = "^2.9.9"
+playwright = "^1.45.0"
+langchain-groq = "0.1.5"
 
 
 [tool.poetry.group.lint.dependencies]
 ruff = "^0.2.2"
+
+
+[tool.poetry.group.dev.dependencies]
+notebook = "^7.2.1"
 
 [build-system]
 requires = ["poetry-core"]

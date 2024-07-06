@@ -152,4 +152,4 @@ node_modules/
 !.yarn/sdks
 !.yarn/versions
 
-notebooks
+chroma_data
