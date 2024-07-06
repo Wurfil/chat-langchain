@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { RemoteRunnable } from "@langchain/core/runnables/remote";
 import { applyPatch } from "@langchain/core/utils/json_patch";
-import searchIcon from "../image/search.svg";
+import searchIcon from "../../public/images/search.svg";
 import Image from "next/image";
 import { EmptyState } from "./EmptyState";
 import { ChatMessageBubble, Message } from "./ChatMessageBubble";
@@ -300,8 +300,16 @@ export function ChatWindow(props: { conversationId: string }) {
           </InputGroup>
 
           {messages.length > 0 && (
-              <Heading fontSize="md" fontWeight="medium" color="#4a5568">
-                Мы ценим ваш отзыв!
+              <Heading fontSize="md" fontWeight="medium" color="#2c5282">
+                <a
+                    href="https://github.com/langchain-ai/chat-langchain"
+                    target="_blank"
+                    className="text-blue-600 flex items-center hover:text-blue-800 transition duration-300"
+                    style={{fontFamily: '"Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif', fontSize: '14px'}}
+                >
+                  <img src="/images/github.svg" className="h-5 mr-2" alt="GitHub" />
+                  <span color="#2c5282">Код приложения</span>
+                </a>
               </Heading>
           )}
         </Flex>
@@ -314,7 +322,7 @@ export function ChatWindow(props: { conversationId: string }) {
                   className="text-blue-600 flex items-center hover:text-blue-800 transition duration-300"
                   style={{fontFamily: '"Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif', fontSize: '14px'}}
               >
-                <img src="/images/github-mark.svg" className="h-5 mr-2" alt="GitHub" />
+                <img src="/images/github.svg" className="h-5 mr-2" alt="GitHub" />
                 <span>Код приложения</span>
               </a>
             </footer>

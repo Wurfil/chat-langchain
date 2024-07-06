@@ -256,16 +256,18 @@ export function ChatMessageBubble(props: {
   };
 
   return (
-      <VStack align="start" spacing={5} pb={5} width="100%">
+      <VStack
+          align="start"
+          spacing={5}
+          pb={5}
+          width="100%"
+          maxHeight="calc(100vh - 150px)"
+          overflowY="auto"
+      >
         {!isUser && (
-            <Flex width="100%" justifyContent="space-between">
-              <Box flex="1" pr={4}>
-                <Heading
-                    fontSize="lg"
-                    fontWeight="medium"
-                    mb={2}
-                    color="#2c5282"
-                >
+            <Flex width="100%" justifyContent="space-between" alignItems="flex-start">
+              <Box flex="1" pr={4} maxWidth="calc(100% - 270px)">
+                <Heading fontSize="lg" fontWeight="medium" mb={2} color="#2c5282">
                   Ответ
                 </Heading>
                 <Box color="black" fontSize="md">
@@ -274,43 +276,40 @@ export function ChatMessageBubble(props: {
               </Box>
 
               {filteredSources.length > 0 && (
-                  <Box width="250px">
-                    <Heading
-                        fontSize="lg"
-                        fontWeight="medium"
-                        mb={2}
-                        color="#2c5282"
-                    >
+                  <Box width="250px" position="sticky" top="0" alignSelf="flex-start">
+                    <Heading fontSize="lg" fontWeight="medium" mb={2} color="#2c5282">
                       Ссылки
                     </Heading>
-                    <VStack align="start" spacing={2} maxHeight="400px" overflowY="auto">
-                      {filteredSources.map((source, index) => (
-                          <Box key={index} width="100%">
-                            <SourceBubble
-                                source={source}
-                                highlighted={highlighedSourceLinkStates[index]}
-                                onMouseEnter={() =>
-                                    setHighlightedSourceLinkStates(
-                                        filteredSources.map((_, i) => i === index)
-                                    )
-                                }
-                                onMouseLeave={() =>
-                                    setHighlightedSourceLinkStates(
-                                        filteredSources.map(() => false)
-                                    )
-                                }
-                                runId={runId}
-                            />
-                          </Box>
-                      ))}
-                    </VStack>
+                    <Box maxHeight="calc(100vh - 200px)" overflowY="auto" pr={2}>
+                      <VStack align="start" spacing={2}>
+                        {filteredSources.map((source, index) => (
+                            <Box key={index} width="100%">
+                              <SourceBubble
+                                  source={source}
+                                  highlighted={highlighedSourceLinkStates[index]}
+                                  onMouseEnter={() =>
+                                      setHighlightedSourceLinkStates(
+                                          filteredSources.map((_, i) => i === index),
+                                      )
+                                  }
+                                  onMouseLeave={() =>
+                                      setHighlightedSourceLinkStates(
+                                          filteredSources.map(() => false),
+                                      )
+                                  }
+                                  runId={runId}
+                              />
+                            </Box>
+                        ))}
+                      </VStack>
+                    </Box>
                   </Box>
               )}
             </Flex>
         )}
 
         {isUser && (
-            <Heading  fontWeight="medium" color="black" fontSize="3xl">
+            <Heading fontWeight="medium" color="black" fontSize="3xl">
               {content}
             </Heading>
         )}
@@ -366,7 +365,7 @@ export function ChatMessageBubble(props: {
                       loadingText="🔄"
                       color="black"
                   >
-                    🦜🛠️ View trace
+                    View trace
                   </Button>
                 </HStack>
             )}

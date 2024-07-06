@@ -26,17 +26,18 @@ export function EmptyState(props: { onChoice: (question: string) => any }) {
                         onMouseUp={handleClick}
                         width="180px"
                         height="120px"
-                        backgroundColor="rgb(58, 58, 61)"
-                        _hover={{ backgroundColor: "rgb(78,78,81)" }}
+                        backgroundColor="white"
+                        _hover={{ backgroundColor: "rgb(196,196,203)" }}
                         cursor="pointer"
                         justifyContent="center"
                         flexShrink={0}
+                        border="1px solid black"
                     >
-                        <CardHeader justifyContent="center" padding="3">
+                        <CardHeader justifyContent="center" padding="3" >
                             <Heading
                                 fontSize="xs"
                                 fontWeight="medium"
-                                color="gray.200"
+                                color="black"
                                 textAlign="center"
                             >
                                 {question}
