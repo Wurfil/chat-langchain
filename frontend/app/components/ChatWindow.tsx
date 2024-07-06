@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { RemoteRunnable } from "@langchain/core/runnables/remote";
 import { applyPatch } from "@langchain/core/utils/json_patch";
-import searchIcon from "../../public/images/search.svg";
+import RuStore from "../../public/images/RuStore.png";
 import Image from "next/image";
 import { EmptyState } from "./EmptyState";
 import { ChatMessageBubble, Message } from "./ChatMessageBubble";
@@ -119,6 +119,7 @@ export function ChatWindow(props: { conversationId: string }) {
             title: doc.metadata.crumbs,
           }));
         }
+
         if (streamedResponse.id !== undefined) {
           runId = streamedResponse.id;
         }
@@ -205,12 +206,11 @@ export function ChatWindow(props: { conversationId: string }) {
             height="90vh"
         >
           <Flex alignItems="center" mb={6}>
-            <Image src={searchIcon} alt="RuStore Icon" width={40} height={40} style={{marginRight: '12px'}} />
+            <Image src={RuStore} alt="RuStore Icon" width={40} height={40} style={{marginRight: '12px'}} />
             <Heading
                 fontSize="3xl"
                 fontWeight="bold"
-                color="#2c5282"
-                textShadow="1px 1px 2px rgba(0,0,0,0.1)"
+                color="#2c81d0"
             >
               RuStore Chat
             </Heading>
@@ -271,7 +271,7 @@ export function ChatWindow(props: { conversationId: string }) {
                 textColor="#2d3748"
                 borderColor="#e2e8f0"
                 backgroundColor="white"
-                _focus={{borderColor: "#3182ce", boxShadow: "0 0 0 1px #3182ce"}}
+                _focus={{borderColor: "#2c81d0", boxShadow: "0 0 0 1px #3182ce"}}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={(e) => {
                   if (e.key === "Enter" && !e.shiftKey) {
