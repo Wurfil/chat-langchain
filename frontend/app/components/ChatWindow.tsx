@@ -116,7 +116,7 @@ export function ChatWindow(props: { conversationId: string }) {
         if (Array.isArray(streamedResponse?.logs?.[sourceStepName]?.final_output?.output)) {
           sources = streamedResponse.logs[sourceStepName].final_output.output.map((doc: Record<string, any>) => ({
             url: doc.metadata.source,
-            title: doc.metadata.title,
+            title: doc.metadata.crumbs,
           }));
         }
         if (streamedResponse.id !== undefined) {
@@ -190,7 +190,7 @@ export function ChatWindow(props: { conversationId: string }) {
           className="flex flex-col items-center justify-center"
           style={{
             fontFamily: '"Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
-            backgroundColor: '#f8fafc',
+            backgroundColor: '#ffffff',
             color: '#2d3748',
             minHeight: '100vh',
             padding: '20px'
@@ -201,7 +201,7 @@ export function ChatWindow(props: { conversationId: string }) {
             alignItems="center"
             justifyContent="center"
             width="100%"
-            maxWidth="800px"
+            maxWidth="1300px"
             height="90vh"
         >
           <Flex alignItems="center" mb={6}>
@@ -298,35 +298,7 @@ export function ChatWindow(props: { conversationId: string }) {
               />
             </InputRightElement>
           </InputGroup>
-
-          {messages.length > 0 && (
-              <Heading fontSize="md" fontWeight="medium" color="#2c5282">
-                <a
-                    href="https://github.com/langchain-ai/chat-langchain"
-                    target="_blank"
-                    className="text-blue-600 flex items-center hover:text-blue-800 transition duration-300"
-                    style={{fontFamily: '"Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif', fontSize: '14px'}}
-                >
-                  <img src="/images/github.svg" className="h-5 mr-2" alt="GitHub" />
-                  <span color="#2c5282">Код приложения</span>
-                </a>
-              </Heading>
-          )}
         </Flex>
-
-        {messages.length === 0 && (
-            <footer className="flex justify-center mt-4">
-              <a
-                  href="https://github.com/langchain-ai/chat-langchain"
-                  target="_blank"
-                  className="text-blue-600 flex items-center hover:text-blue-800 transition duration-300"
-                  style={{fontFamily: '"Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif', fontSize: '14px'}}
-              >
-                <img src="/images/github.svg" className="h-5 mr-2" alt="GitHub" />
-                <span>Код приложения</span>
-              </a>
-            </footer>
-        )}
       </Box>
   );
 }

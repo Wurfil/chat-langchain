@@ -1,16 +1,16 @@
 import { Source } from "./SourceBubble";
-import {Link} from "@chakra-ui/react";
+import { Link } from "@chakra-ui/react";
 import React from "react";
 
 export function InlineCitation(props: {
-  source: Source;
-  sourceNumber: number;
-  highlighted: boolean;
-  onMouseEnter: () => any;
-  onMouseLeave: () => any;
+    source: Source;
+    sourceNumber: number;
+    highlighted: boolean;
+    onMouseEnter: () => {};
+    onMouseLeave: () => {};
 }) {
-  const { source, sourceNumber, highlighted, onMouseEnter, onMouseLeave } =
-    props;
+    const { source, sourceNumber, highlighted, onMouseEnter, onMouseLeave } =
+        props;
     return (
         <Link
             href={source.url}
@@ -25,10 +25,12 @@ export function InlineCitation(props: {
             backgroundColor={highlighted ? "blue.100" : "transparent"}
             _hover={{
                 textDecoration: "underline",
-                backgroundColor: "blue.50"
+                backgroundColor: "blue.50",
             }}
             onMouseEnter={onMouseEnter}
             onMouseLeave={onMouseLeave}
+            whiteSpace="nowrap" // Для предотвращения переноса на новую строку
+            display="inline-block" // Используем inline-block вместо inline
         >
             [{sourceNumber}]
         </Link>

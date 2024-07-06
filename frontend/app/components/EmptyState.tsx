@@ -19,7 +19,8 @@ export function EmptyState(props: { onChoice: (question: string) => any }) {
                     "Что такое chargeback?",
                     "Почему сумма по возвратам отображается как 0 руб.?",
                     "Что делать, если меняются данные Компании, адрес, реквизиты или email?",
-                    "Можно ли создать несколько товаров с одинаковым idо?"
+                    "Можно ли создать несколько товаров с одинаковым idо?",
+                    "Можно ли создать один товар с двумя ido?"
                 ].map((question, index) => (
                     <Card
                         key={index}
@@ -31,13 +32,13 @@ export function EmptyState(props: { onChoice: (question: string) => any }) {
                         cursor="pointer"
                         justifyContent="center"
                         flexShrink={0}
-                        border="1px solid black"
+                        border="1px solid gray"
                     >
                         <CardHeader justifyContent="center" padding="3" >
                             <Heading
                                 fontSize="xs"
                                 fontWeight="medium"
-                                color="black"
+                                color="gray"
                                 textAlign="center"
                             >
                                 {question}
