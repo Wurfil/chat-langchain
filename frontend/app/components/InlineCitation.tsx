@@ -1,4 +1,6 @@
 import { Source } from "./SourceBubble";
+import {Link} from "@chakra-ui/react";
+import React from "react";
 
 export function InlineCitation(props: {
   source: Source;
@@ -9,17 +11,26 @@ export function InlineCitation(props: {
 }) {
   const { source, sourceNumber, highlighted, onMouseEnter, onMouseLeave } =
     props;
-  return (
-    <a
-      href={source.url}
-      target="_blank"
-      className={`relative bottom-1.5 text-xs border rounded px-1 ${
-        highlighted ? "bg-[rgb(58,58,61)]" : "bg-[rgb(78,78,81)]"
-      }`}
-      onMouseEnter={onMouseEnter}
-      onMouseLeave={onMouseLeave}
-    >
-      {sourceNumber}
-    </a>
-  );
+    return (
+        <Link
+            href={source.url}
+            isExternal
+            color="#2c5282" // Синий цвет
+            fontWeight="medium"
+            fontSize="xs"
+            position="relative"
+            bottom="1.5"
+            px="1"
+            borderRadius="sm"
+            backgroundColor={highlighted ? "blue.100" : "transparent"}
+            _hover={{
+                textDecoration: "underline",
+                backgroundColor: "blue.50"
+            }}
+            onMouseEnter={onMouseEnter}
+            onMouseLeave={onMouseLeave}
+        >
+            [{sourceNumber}]
+        </Link>
+    );
 }

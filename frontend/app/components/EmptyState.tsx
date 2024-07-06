@@ -5,101 +5,46 @@ import {
   Card,
   CardHeader,
   Flex,
-  Spacer,
+  Spacer, Box,
 } from "@chakra-ui/react";
 
 export function EmptyState(props: { onChoice: (question: string) => any }) {
   const handleClick = (e: MouseEvent) => {
     props.onChoice((e.target as HTMLDivElement).innerText);
   };
-  return (
-    <div className="rounded flex flex-col items-center max-w-full md:p-8">
-      <Flex marginTop={"25px"} grow={1} maxWidth={"800px"} width={"100%"}>
-        <Card
-          onMouseUp={handleClick}
-          width={"48%"}
-          backgroundColor={"rgb(58, 58, 61)"}
-          _hover={{ backgroundColor: "rgb(78,78,81)" }}
-          cursor={"pointer"}
-          justifyContent={"center"}
-        >
-          <CardHeader justifyContent={"center"}>
-            <Heading
-              fontSize="lg"
-              fontWeight={"medium"}
-              mb={1}
-              color={"gray.200"}
-              textAlign={"center"}
-            >
-              Что такое chargeback / отмененный платеж?
-            </Heading>
-          </CardHeader>
-        </Card>
-        <Spacer />
-        <Card
-          onMouseUp={handleClick}
-          width={"48%"}
-          backgroundColor={"rgb(58, 58, 61)"}
-          _hover={{ backgroundColor: "rgb(78,78,81)" }}
-          cursor={"pointer"}
-          justifyContent={"center"}
-        >
-          <CardHeader justifyContent={"center"}>
-            <Heading
-              fontSize="lg"
-              fontWeight={"medium"}
-              mb={1}
-              color={"gray.200"}
-              textAlign={"center"}
-            >
-              Почему сумма по возвратам отображается как "0" руб.?
-            </Heading>
-          </CardHeader>
-        </Card>
-      </Flex>
-      <Flex marginTop={"25px"} grow={1} maxWidth={"800px"} width={"100%"}>
-        <Card
-          onMouseUp={handleClick}
-          width={"48%"}
-          backgroundColor={"rgb(58, 58, 61)"}
-          _hover={{ backgroundColor: "rgb(78,78,81)" }}
-          cursor={"pointer"}
-          justifyContent={"center"}
-        >
-          <CardHeader justifyContent={"center"}>
-            <Heading
-              fontSize="lg"
-              fontWeight={"medium"}
-              mb={1}
-              color={"gray.200"}
-              textAlign={"center"}
-            >
-              Что делать, если меняются данные Компании/Разработчика, адрес, реквизиты или email?
-            </Heading>
-          </CardHeader>
-        </Card>
-        <Spacer />
-        <Card
-          onMouseUp={handleClick}
-          width={"48%"}
-          backgroundColor={"rgb(58, 58, 61)"}
-          _hover={{ backgroundColor: "rgb(78,78,81)" }}
-          cursor={"pointer"}
-          justifyContent={"center"}
-        >
-          <CardHeader justifyContent={"center"}>
-            <Heading
-              fontSize="lg"
-              fontWeight={"medium"}
-              mb={1}
-              color={"gray.200"}
-              textAlign={"center"}
-            >
-              Можно ли создать несколько товаров с одинаковым id или удалить его и создать заново?
-            </Heading>
-          </CardHeader>
-        </Card>
-      </Flex>
-    </div>
-  );
+    return (
+        <Box className="rounded max-w-full"  display="flex" justifyContent="center">
+            <Flex direction="row" justifyContent="center" alignItems="center" gap="4" maxWidth="1400px" >
+                {[
+                    "Что такое chargeback?",
+                    "Почему сумма по возвратам отображается как 0 руб.?",
+                    "Что делать, если меняются данные Компании, адрес, реквизиты или email?",
+                    "Можно ли создать несколько товаров с одинаковым idо?"
+                ].map((question, index) => (
+                    <Card
+                        key={index}
+                        onMouseUp={handleClick}
+                        width="180px"
+                        height="120px"
+                        backgroundColor="rgb(58, 58, 61)"
+                        _hover={{ backgroundColor: "rgb(78,78,81)" }}
+                        cursor="pointer"
+                        justifyContent="center"
+                        flexShrink={0}
+                    >
+                        <CardHeader justifyContent="center" padding="3">
+                            <Heading
+                                fontSize="xs"
+                                fontWeight="medium"
+                                color="gray.200"
+                                textAlign="center"
+                            >
+                                {question}
+                            </Heading>
+                        </CardHeader>
+                    </Card>
+                ))}
+            </Flex>
+        </Box>
+    );
 }

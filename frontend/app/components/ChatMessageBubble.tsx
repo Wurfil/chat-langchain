@@ -256,117 +256,122 @@ export function ChatMessageBubble(props: {
   };
 
   return (
-    <VStack align="start" spacing={5} pb={5}>
-      {!isUser && filteredSources.length > 0 && (
-        <>
-          <Flex direction={"column"} width={"100%"}>
-            <VStack spacing={"5px"} align={"start"} width={"100%"}>
-              <Heading
-                fontSize="lg"
-                fontWeight={"medium"}
-                mb={1}
-                color={"blue.300"}
-                paddingBottom={"10px"}
-              >
-                Sources
-              </Heading>
-              <HStack spacing={"10px"} maxWidth={"100%"} overflow={"auto"}>
-                {filteredSources.map((source, index) => (
-                  <Box key={index} alignSelf={"stretch"} width={40}>
-                    <SourceBubble
-                      source={source}
-                      highlighted={highlighedSourceLinkStates[index]}
-                      onMouseEnter={() =>
-                        setHighlightedSourceLinkStates(
-                          filteredSources.map((_, i) => i === index),
-                        )
-                      }
-                      onMouseLeave={() =>
-                        setHighlightedSourceLinkStates(
-                          filteredSources.map(() => false),
-                        )
-                      }
-                      runId={runId}
-                    />
+      <VStack align="start" spacing={5} pb={5} width="100%">
+        {!isUser && (
+            <Flex width="100%" justifyContent="space-between">
+              <Box flex="1" pr={4}>
+                <Heading
+                    fontSize="lg"
+                    fontWeight="medium"
+                    mb={2}
+                    color="#2c5282"
+                >
+                  Ответ
+                </Heading>
+                <Box color="black" fontSize="md">
+                  {answerElements}
+                </Box>
+              </Box>
+
+              {filteredSources.length > 0 && (
+                  <Box width="250px">
+                    <Heading
+                        fontSize="lg"
+                        fontWeight="medium"
+                        mb={2}
+                        color="#2c5282"
+                    >
+                      Ссылки
+                    </Heading>
+                    <VStack align="start" spacing={2} maxHeight="400px" overflowY="auto">
+                      {filteredSources.map((source, index) => (
+                          <Box key={index} width="100%">
+                            <SourceBubble
+                                source={source}
+                                highlighted={highlighedSourceLinkStates[index]}
+                                onMouseEnter={() =>
+                                    setHighlightedSourceLinkStates(
+                                        filteredSources.map((_, i) => i === index)
+                                    )
+                                }
+                                onMouseLeave={() =>
+                                    setHighlightedSourceLinkStates(
+                                        filteredSources.map(() => false)
+                                    )
+                                }
+                                runId={runId}
+                            />
+                          </Box>
+                      ))}
+                    </VStack>
                   </Box>
-                ))}
-              </HStack>
-            </VStack>
-          </Flex>
-
-          <Heading size="lg" fontWeight="medium" color="blue.300">
-            Answer
-          </Heading>
-        </>
-      )}
-
-      {isUser ? (
-        <Heading size="lg" fontWeight="medium" color="white">
-          {content}
-        </Heading>
-      ) : (
-        <Box className="whitespace-pre-wrap" color="white">
-          {answerElements}
-        </Box>
-      )}
-
-      {props.message.role !== "user" &&
-        props.isMostRecent &&
-        props.messageCompleted && (
-          <HStack spacing={2}>
-            <Button
-              ref={upButtonRef}
-              size="sm"
-              variant="outline"
-              colorScheme={feedback === null ? "green" : "gray"}
-              onClick={() => {
-                if (feedback === null && props.message.runId) {
-                  sendUserFeedback(1, "user_score");
-                  animateButton("upButton");
-                  setFeedbackColor("border-4 border-green-300");
-                } else {
-                  toast.error("You have already provided your feedback.");
-                }
-              }}
-            >
-              👍
-            </Button>
-            <Button
-              ref={downButtonRef}
-              size="sm"
-              variant="outline"
-              colorScheme={feedback === null ? "red" : "gray"}
-              onClick={() => {
-                if (feedback === null && props.message.runId) {
-                  sendUserFeedback(0, "user_score");
-                  animateButton("downButton");
-                  setFeedbackColor("border-4 border-red-300");
-                } else {
-                  toast.error("You have already provided your feedback.");
-                }
-              }}
-            >
-              👎
-            </Button>
-            <Spacer />
-            <Button
-              size="sm"
-              variant="outline"
-              colorScheme={runId === null ? "blue" : "gray"}
-              onClick={(e) => {
-                e.preventDefault();
-                viewTrace();
-              }}
-              isLoading={traceIsLoading}
-              loadingText="🔄"
-              color="white"
-            >
-              🦜🛠️ View trace
-            </Button>
-          </HStack>
+              )}
+            </Flex>
         )}
 
-      {!isUser && <Divider mt={4} mb={4} />}
-    </VStack>
+        {isUser && (
+            <Heading  fontWeight="medium" color="black" fontSize="3xl">
+              {content}
+            </Heading>
+        )}
+
+        {props.message.role !== "user" &&
+            props.isMostRecent &&
+            props.messageCompleted && (
+                <HStack spacing={2} width="100%">
+                  <Button
+                      ref={upButtonRef}
+                      size="sm"
+                      variant="outline"
+                      colorScheme={feedback === null ? "green" : "white"}
+                      onClick={() => {
+                        if (feedback === null && props.message.runId) {
+                          sendUserFeedback(1, "user_score");
+                          animateButton("upButton");
+                          setFeedbackColor("border-4 border-green-300");
+                        } else {
+                          toast.error("You have already provided your feedback.");
+                        }
+                      }}
+                  >
+                    👍
+                  </Button>
+                  <Button
+                      ref={downButtonRef}
+                      size="sm"
+                      variant="outline"
+                      colorScheme={feedback === null ? "red" : "gray"}
+                      onClick={() => {
+                        if (feedback === null && props.message.runId) {
+                          sendUserFeedback(0, "user_score");
+                          animateButton("downButton");
+                          setFeedbackColor("border-4 border-red-300");
+                        } else {
+                          toast.error("You have already provided your feedback.");
+                        }
+                      }}
+                  >
+                    👎
+                  </Button>
+                  <Spacer />
+                  <Button
+                      size="sm"
+                      variant="outline"
+                      colorScheme="blue"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        viewTrace();
+                      }}
+                      isLoading={traceIsLoading}
+                      loadingText="🔄"
+                      color="black"
+                  >
+                    🦜🛠️ View trace
+                  </Button>
+                </HStack>
+            )}
+
+        {!isUser && <Divider mt={4} mb={4} />}
+      </VStack>
   );
 }
