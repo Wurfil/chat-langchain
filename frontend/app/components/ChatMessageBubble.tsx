@@ -63,7 +63,9 @@ const createAnswerElements = (
     filteredSources: Source[],
     sourceIndexMap: Map<number, number>,
     highlighedSourceLinkStates: boolean[],
-    setHighlightedSourceLinkStates: React.Dispatch<React.SetStateAction<boolean[]>>
+    setHighlightedSourceLinkStates: React.Dispatch<
+        React.SetStateAction<boolean[]>
+    >,
 ) => {
   const matches = Array.from(content.matchAll(/\[\^?\$?{?(\d+)}?\^?\]/g));
   const elements: JSX.Element[] = [];
@@ -76,14 +78,12 @@ const createAnswerElements = (
           sourceNumber={resolvedNum + 1}
           highlighted={highlighedSourceLinkStates[resolvedNum]}
           onMouseEnter={() =>
-              setHighlightedSourceLinkStates((prevStates) =>
-                  filteredSources.map((_, i) => i === resolvedNum)
+              setHighlightedSourceLinkStates(
+                  filteredSources.map((_, i) => i === resolvedNum),
               )
           }
           onMouseLeave={() =>
-              setHighlightedSourceLinkStates((prevStates) =>
-                  filteredSources.map(() => false)
-              )
+              setHighlightedSourceLinkStates(filteredSources.map(() => false))
           }
       />
   );
@@ -97,9 +97,9 @@ const createAnswerElements = (
     const parser = new DOMParser();
     const doc = parser.parseFromString(sanitizedHtml, "text/html");
 
-    const processNode = (node: Node): React.ReactNode => {
+    const processNode = (node: Node): JSX.Element => {
       if (node.nodeType === Node.TEXT_NODE) {
-        return node.textContent;
+        return <>{node.textContent}</>;
       } else if (node.nodeType === Node.ELEMENT_NODE) {
         const element = node as Element;
         const children = Array.from(element.childNodes).map(processNode);
@@ -124,22 +124,21 @@ const createAnswerElements = (
           }
         }
 
-        return <ElementType key={prevIndex++}>{children as any}</ElementType>;
+        return <ElementType key={prevIndex++}>{children}</ElementType>;
       }
-      return null;
+      return <></>;
     };
 
     return <>{Array.from(doc.body.childNodes).map(processNode)}</>;
   };
+
 
   matches.forEach((match) => {
     const sourceNum = parseInt(match[1], 10);
     const resolvedNum = sourceIndexMap.get(sourceNum) ?? 10;
     if (match.index !== null && resolvedNum < filteredSources.length) {
       const citationElement = createCitation(sourceNum, resolvedNum);
-      elements.push(
-          processContent(content.slice(prevIndex, match.index), true, citationElement)
-      );
+      elements.push(processContent(content.slice(prevIndex, match.index), true, citationElement));
       prevIndex = (match?.index ?? 0) + match[0].length;
     }
   });
@@ -149,7 +148,7 @@ const createAnswerElements = (
   }
 
   // Return the elements wrapped in a <ul> if all are <li> elements
-  if (elements.every((el) => React.isValidElement(el))) {
+  if (elements.every(el => React.isValidElement(el))) {
     return <ul>{elements}</ul>;
   }
 
@@ -253,7 +252,7 @@ export function ChatMessageBubble(props: {
       filterSources(sources);
 
   const [highlighedSourceLinkStates, setHighlightedSourceLinkStates] = useState(
-      filteredSources.map(() => false)
+      filteredSources.map(() => false),
   );
   const answerElements =
       role === "assistant"
@@ -262,7 +261,7 @@ export function ChatMessageBubble(props: {
               filteredSources,
               sourceIndexMap,
               highlighedSourceLinkStates,
-              setHighlightedSourceLinkStates
+              setHighlightedSourceLinkStates,
           )
           : [];
 
@@ -299,13 +298,13 @@ export function ChatMessageBubble(props: {
                                   source={source}
                                   highlighted={highlighedSourceLinkStates[index]}
                                   onMouseEnter={() =>
-                                      setHighlightedSourceLinkStates((prevStates) =>
-                                          filteredSources.map((_, i) => i === index)
+                                      setHighlightedSourceLinkStates(
+                                          filteredSources.map((_, i) => i === index),
                                       )
                                   }
                                   onMouseLeave={() =>
-                                      setHighlightedSourceLinkStates((prevStates) =>
-                                          filteredSources.map(() => false)
+                                      setHighlightedSourceLinkStates(
+                                          filteredSources.map(() => false),
                                       )
                                   }
                                   runId={runId}

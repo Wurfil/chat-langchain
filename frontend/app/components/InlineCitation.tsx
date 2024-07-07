@@ -6,8 +6,8 @@ export function InlineCitation(props: {
     source: Source;
     sourceNumber: number;
     highlighted: boolean;
-    onMouseEnter: () => any;
-    onMouseLeave: () => any;
+    onMouseEnter: () => {};
+    onMouseLeave: () => {};
 }) {
     const { source, sourceNumber, highlighted, onMouseEnter, onMouseLeave } =
         props;
