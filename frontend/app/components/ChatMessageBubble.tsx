@@ -351,20 +351,7 @@ export function ChatMessageBubble(props: {
                     Ответ неверный
                   </Button>
                   <Spacer />
-                  <Button
-                      size="sm"
-                      variant="outline"
-                      colorScheme="blue"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        viewTrace();
-                      }}
-                      isLoading={traceIsLoading}
-                      loadingText="🔄"
-                      color="black"
-                  >
-                    View trace
-                  </Button>
+
                 </HStack>
             )}
         {!isUser && <Divider mt={4} mb={4} />}
