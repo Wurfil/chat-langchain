@@ -9,7 +9,15 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
     title: "RuStore",
     description: "Chatbot for RuStore",
-
+    head: {
+        link: [
+            {
+                rel: "icon",
+                type: "image/svg+xml",
+                href: "/RuStore.png", // Correct path to the favicon
+            },
+        ],
+    },
 };
 
 export default function RootLayout({
@@ -20,7 +28,9 @@ export default function RootLayout({
     return (
         <html lang="ru" className="h-full">
         <Head>
-            <title>{metadata.title as any} </title>
+            <title>{metadata.title}</title>
+            <meta name="description" content={metadata.description} />
+            {/* No need to specify another link for the favicon */}
         </Head>
         <body className={`${inter.className} h-full`}>
         <div
