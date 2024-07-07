@@ -278,7 +278,7 @@ export function ChatMessageBubble(props: {
         {!isUser && (
             <Flex width="100%" justifyContent="space-between" alignItems="flex-start">
               <Box flex="1" pr={4} maxWidth="calc(100% - 270px)">
-                <Heading fontSize="lg" fontWeight="medium" mb={2} color="#0078ff">
+                <Heading fontSize="lg" fontWeight="medium" mb={2} color="#2c5282">
                   Ответ
                 </Heading>
                 <Box color="black" fontSize="md">
@@ -288,7 +288,7 @@ export function ChatMessageBubble(props: {
 
               {filteredSources.length > 0 && (
                   <Box width="250px" position="sticky" top="0" alignSelf="flex-start">
-                    <Heading fontSize="lg" fontWeight="medium" mb={2} color="#0078ff">
+                    <Heading fontSize="lg" fontWeight="medium" mb={2} color="#2c5282">
                       Источники
                     </Heading>
                     <Box maxHeight="400px" overflowY="auto" pr={2}>
